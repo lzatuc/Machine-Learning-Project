@@ -1,77 +1,94 @@
 import queue
 import math
 
+
 class KNN:
 
-    def __init__(self, trainingFilePath, testingFilePath):
-        self.trainingFilePath = trainingFilePath
-        self.testingFilePath = testingFilePath
+    def __init__(self, training_file, testing_file):
+        self.file_paths = ["", ""]
+        self.file_paths[0] = training_file
+        self.file_paths[1] = testing_file
+        self.labels = []
+        self.training_set = []
+        self.testing_set = []
 
-    def readTraining(self):
-        label = []
-        data = []
-        file = open(self.trainingFilePath)
-        file.readline()
-        line = file.readline()
-        while line:
-            features = line.split(",")
-            label.append(int(features[0]))
-            feature_array = []
-            for f in features[1:]:
-                feature_array.append(int(f))
-            data.append(feature_array)
+    def __parse_line(self, line, idx):
+        pixels = line.split(",")
+        if idx == 0:
+            self.labels.append(int(pixels[0]))
+            pixels = pixels[1:]
+        sparse_rep = []
+        feature_len = len(pixels)
+        for i in range(feature_len):
+            val = int(pixels[i])
+            if val != 0:
+                sparse_rep.append((val, i))
+        if idx == 0:
+            self.training_set.append(sparse_rep)
+        else:
+            self.testing_set.append(sparse_rep)
+
+    def __read_file(self):
+        for idx in range(2):
+            file = open(self.file_paths[idx])
+            file.readline()
             line = file.readline()
-        return label, data
+            while line:
+                self.__parse_line(line, idx)
+                line = file.readline()
 
-    def readTesting(self):
-        data = []
-        file = open(self.testingFilePath)
-        file.readline()
-        line = file.readline()
-        while line:
-            features = line.split(",")
-            feature_array = []
-            for f in features:
-                feature_array.append(int(f))
-            data.append(feature_array)
-            line = file.readline()
-        return data
-
-    # def crossValidation(self):
-        # label, training = (,)
-
-    def dist(self, v1, v2):
-        res = 0.0
-        for i in range(len(v1)):
-            res += (v1[i] - v2[i]) ** 2
-        return math.sqrt(res)
+    @staticmethod
+    def __dist(vec1, vec2):
+        similarity = 0.0
+        idx1 = 0
+        idx2 = 0
+        while idx1 < len(vec1) and idx2 < len(vec2):
+            tuple1 = vec1[idx1]
+            tuple2 = vec2[idx2]
+            idx1_at_vector = tuple1[1]
+            idx2_at_vector = tuple2[1]
+            if idx1_at_vector < idx2_at_vector:
+                similarity += tuple1[0] ** 2
+                idx1 += 1
+            elif idx1_at_vector > idx2_at_vector:
+                similarity += tuple2[0] ** 2
+                idx2 += 1
+            else:
+                similarity = (tuple1[0] - tuple2[0]) ** 2
+                idx1 += 1
+                idx2 += 1
+        while idx1 < len(vec1):
+            tuple1 = vec1[idx1]
+            similarity += tuple1[0] ** 2
+            idx1 += 1
+        while idx2 < len(vec2):
+            tuple2 = vec2[idx2]
+            similarity += tuple2[0] ** 2
+            idx2 += 1
+        return math.sqrt(similarity)
 
     def knn(self):
-        k  = 10
-        label, trainingSet = self.readTraining()
-        testingSet = self.readTesting()
-        targetLabels = []
-        for testingCase in testingSet:
-            q = queue.PriorityQueue()
+        self.__read_file()
+        k = 10
+        target_labels = []
+        for testing_case in self.testing_set:
             vote = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-            for i in range(len(trainingSet)):
-                trainingCase = trainingSet[i]
-                d = self.dist(trainingCase, testingCase)
-                q.put((d, label[i]))
+            que = queue.PriorityQueue()
+            for i in range(len(self.training_set)):
+                training_case = self.training_set[i]
+                similarity = self.__dist(training_case, testing_case)
+                que.put((similarity, self.labels[i]))
             for i in range(k):
-                elem = q.get()
+                elem = que.get()
                 vote[elem[1]] += 1
-            targetLabels.append(vote.index(max(vote)))
-        return targetLabels
+            label = vote.index(max(vote))
+            print(label)
+            target_labels.append(label)
+        return target_labels
 
 if __name__ == '__main__':
-    trainingFilePath = 'train.csv'
-    testingFilePath = 'test.csv'
-    KNN(trainingFilePath, testingFilePath).knn()
-    targetLables = KNN(trainingFilePath, testingFilePath).knn()
-    for label in targetLables:
-        print(label)
-
-
-
+    v1 = (1, 2)
+    v2 = (3, 4)
+    target_labels = KNN('train.csv', 'test.csv').knn()
+    print(target_labels)
 
