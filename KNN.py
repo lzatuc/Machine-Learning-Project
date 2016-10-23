@@ -51,8 +51,7 @@ class KNN:
         label, trainingSet = self.readTraining()
         testingSet = self.readTesting()
         targetLabels = []
-        for i in range(1):
-            testingCase = testingSet[i]
+        for testingCase in testingSet:
             q = queue.PriorityQueue()
             vote = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             for i in range(len(trainingSet)):
@@ -64,16 +63,6 @@ class KNN:
                 vote[elem[1]] += 1
             targetLabels.append(vote.index(max(vote)))
         return targetLabels
-
-
-    def f(self):
-        q = queue.PriorityQueue()
-        q.put((3, 10))
-        q.put((2, 11))
-        q.put((5, 8))
-        q.put((3, 7))
-        while not q.empty():
-            print(q.get())
 
 if __name__ == '__main__':
     trainingFilePath = 'train.csv'
