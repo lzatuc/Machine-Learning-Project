@@ -1,1 +1,1 @@
-看了一会儿python,写了两句KNN做个分类,很惭愧,就做了一点微小的工作
+start to write python
