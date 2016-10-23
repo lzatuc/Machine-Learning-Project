@@ -87,8 +87,6 @@ class KNN:
         return target_labels
 
 if __name__ == '__main__':
-    v1 = (1, 2)
-    v2 = (3, 4)
     target_labels = KNN('train.csv', 'test.csv').knn()
     print(target_labels)
 
