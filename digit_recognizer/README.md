@@ -6,4 +6,4 @@ For some methods, I'll try to implement from scratch to review the idea behind i
 
 Although the data is well extracted and organized, I'll try different transformation on it, including standardization, normalization, PCA, LDA, etc to see how these pre-processing affect the final outcome.
 
-Later, I'll provide R version of some methods.
+Later, I'll provide R version of some methods. 
