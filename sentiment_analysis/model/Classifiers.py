@@ -1,4 +1,4 @@
-import pandas as pd
+.idea/workspace.xmlimport pandas as pd
 from data_manager.MySqlPersistenceHelper import MySqlPersistenceHelper
 from sklearn.linear_model import LogisticRegression, LogisticRegressionCV, RandomizedLogisticRegression
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
@@ -81,7 +81,7 @@ class Classifiers:
             #                         test_feature=test_tfidf,
             #                         test_label=test_label)
             # print(summary)
-            
+
 
 if __name__ == '__main__':
     Classifiers().make_prediction()
