@@ -1,4 +1,4 @@
-.idea/workspace.xmlimport pandas as pd
+import pandas as pd
 from data_manager.MySqlPersistenceHelper import MySqlPersistenceHelper
 from sklearn.linear_model import LogisticRegression, LogisticRegressionCV, RandomizedLogisticRegression
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
@@ -9,7 +9,9 @@ from sklearn.svm import SVC, LinearSVC
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import label_binarize
 from sklearn.neural_network import MLPClassifier
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.multiclass import OneVsRestClassifier
+from sklearn.ensemble import RandomForestClassifier, BaggingClassifier, AdaBoostClassifier, GradientBoostingClassifier
 
 
 class Classifiers:
@@ -29,7 +31,7 @@ class Classifiers:
         sql = 'select wordSegment, star from train'
         train_corpus, train_label = self.get_data(sql)
 
-        train_label = label_binarize(train_label, classes=[-1,0,1])
+        # train_label = label_binarize(train_label, classes=[-1,0,1])
 
 
         vectorizer = CountVectorizer(token_pattern=r'(?u)\b\w+\b', ngram_range=(1,2))
@@ -39,39 +41,47 @@ class Classifiers:
 
         sql = 'select wordSegment, star from test'
         test_corpus, test_label = self.get_data(sql)
-        test_label = label_binarize(test_label, classes=[-1, 0, 1])
+        # test_label = label_binarize(test_label, classes=[-1, 0, 1])
         test_count = vectorizer.transform(test_corpus)
 
         test_tfidf = tfidf_transformer.transform(test_count)
 
-        n_classes = train_label.shape[1]
+        # n_classes = train_label.shape[1]
 
 
 
         #'newton-cg','sag' and 'lbfgs'
         clfs = [#LogisticRegression(),
                 # MultinomialNB(),
-                LinearSVC()]
+                # LinearSVC()]
                 # KNeighborsClassifier(n_neighbors=30, weights='uniform')]
-                # MLPClassifier(hidden_layer_sizes=3)]
+                # MLPClassifier(hidden_layer_sizes=10)]
+                GradientBoostingClassifier()]
+        clf = clfs[0]
+        summary = self.classify(clf=clf,
+                                train_feature=train_tfidf.toarray(),
+                                train_label=train_label,
+                                test_feature=test_tfidf.toarray(),
+                                test_label=test_label)
+        print(summary)
 
 
-        for clf in clfs:
-            y_score = OneVsRestClassifier(clf.fit(train_tfidf, train_label)).decision_function()
-
-            fpr = dict()
-
-            tpr = dict()
-
-            roc_auc = dict()
-
-            for i in range(n_classes):
-                fpr[i], tpr[i], _ = roc_curve(test_label[:, i], y_score[:, i])
-                roc_auc[i] = auc(fpr[i], tpr[i])
-
-            # Compute micro-average ROC curve and ROC area
-            fpr["micro"], tpr["micro"], _ = roc_curve(test_label.ravel(), y_score.ravel())
-            roc_auc["micro"] = auc(fpr["micro"], tpr["micro"])
+        # for clf in clfs:
+        #     y_score = OneVsRestClassifier(clf.fit(train_tfidf, train_label)).decision_function()
+        #
+        #     fpr = dict()
+        #
+        #     tpr = dict()
+        #
+        #     roc_auc = dict()
+        #
+        #     for i in range(n_classes):
+        #         fpr[i], tpr[i], _ = roc_curve(test_label[:, i], y_score[:, i])
+        #         roc_auc[i] = auc(fpr[i], tpr[i])
+        #
+        #     # Compute micro-average ROC curve and ROC area
+        #     fpr["micro"], tpr["micro"], _ = roc_curve(test_label.ravel(), y_score.ravel())
+        #     roc_auc["micro"] = auc(fpr["micro"], tpr["micro"])
 
             # for i in range()
 
