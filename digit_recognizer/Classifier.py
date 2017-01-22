@@ -44,10 +44,10 @@ class Classifier:
 
 if __name__ == '__main__':
     path = './train.csv'
-    extractor = Classifier()
-    df = extractor.read_df(path)
-    x_train, y_train, x_test, y_test = extractor.gen_train_test(df)
-    extractor.reduce_dimension(x_train, x_test, y_train, y_test)
+    classifier = Classifier()
+    df = classifier.read_df(path)
+    x_train, y_train, x_test, y_test = classifier.gen_train_test(df)
+    classifier.reduce_dimension(x_train, x_test, y_train, y_test)
     # matrix = FeatureExtractor().read_df(path)[:, 1:]
     # print(matrix)
     # pca = PCA(n_components=2)
