@@ -1,0 +1,1 @@
+Sentiment analysis on douban short movie review, crawling and parse data with scrapy, segment data with boson rest api, data storing using  mysql, feature extraction using N-gram and tfidf model, run on lr, svm, nb, knn, mlpc with cross validation and parameter tuning, evaluate with precision, recall, f-measure, ROC, AUC.
