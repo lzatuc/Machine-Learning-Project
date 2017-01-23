@@ -12,7 +12,7 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.ensemble import RandomForestClassifier, BaggingClassifier, AdaBoostClassifier, GradientBoostingClassifier
-
+from sklearn.decomposition import TruncatedSVD
 
 class Classifiers:
     def __init__(self):
@@ -38,6 +38,8 @@ class Classifiers:
         train_count = vectorizer.fit_transform(train_corpus)
         tfidf_transformer = TfidfTransformer()
         train_tfidf = tfidf_transformer.fit_transform(train_count)
+        # truncatedSVD = TruncatedSVD(n_components=100)
+        # train_tfidf = truncatedSVD.fit_transform(train_tfidf)
 
         sql = 'select wordSegment, star from test'
         test_corpus, test_label = self.get_data(sql)
@@ -46,24 +48,26 @@ class Classifiers:
 
         test_tfidf = tfidf_transformer.transform(test_count)
 
+        # test_tfidf = truncatedSVD.transform(test_tfidf)
+
         # n_classes = train_label.shape[1]
 
 
 
         #'newton-cg','sag' and 'lbfgs'
-        clfs = [#LogisticRegression(),
+        clfs = [#LogisticRegression()]
                 # MultinomialNB(),
-                # LinearSVC()]
+                 LinearSVC()]
                 # KNeighborsClassifier(n_neighbors=30, weights='uniform')]
                 # MLPClassifier(hidden_layer_sizes=10)]
-                GradientBoostingClassifier()]
-        clf = clfs[0]
-        summary = self.classify(clf=clf,
-                                train_feature=train_tfidf.toarray(),
-                                train_label=train_label,
-                                test_feature=test_tfidf.toarray(),
-                                test_label=test_label)
-        print(summary)
+                # BaggingClassifier(base_estimator=LogisticRegressionCV())]
+        for clf in clfs:
+            summary = self.classify(clf=clf,
+                                    train_feature=train_tfidf,
+                                    train_label=train_label,
+                                    test_feature=test_tfidf,
+                                    test_label=test_label)
+            print(summary)
 
 
         # for clf in clfs:
