@@ -32,7 +32,7 @@ class Classifier:
             # print(train_data)
             train_data = pca.fit_transform(train_data)
         #     print(train_data)
-            clf = GradientBoostingClassifier()#KNeighborsClassifier(n_neighbors=15)#LogisticRegression()
+            clf = AdaBoostClassifier()#KNeighborsClassifier(n_neighbors=15)#LogisticRegression()
             clf.fit(train_data, train_label)
             test_data = pca.transform(test_data)
             predictions = clf.predict(test_data)
@@ -135,3 +135,20 @@ if __name__ == '__main__':
 #           9       0.48      0.56      0.52       850
 #
 # avg / total       0.70      0.69      0.69      8400
+
+#rerun GradientBoostingClassifier with PCA
+#              precision    recall  f1-score   support
+#
+#           0       0.97      0.96      0.96       812
+#           1       0.98      0.97      0.97       927
+#           2       0.91      0.91      0.91       809
+#           3       0.93      0.88      0.91       943
+#           4       0.92      0.92      0.92       783
+#           5       0.88      0.91      0.89       753
+#           6       0.94      0.96      0.95       811
+#           7       0.94      0.94      0.94       910
+#           8       0.90      0.91      0.91       843
+#           9       0.89      0.90      0.89       809
+#
+# avg / total       0.93      0.93      0.93      8400
+

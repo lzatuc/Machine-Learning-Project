@@ -98,7 +98,7 @@ class Classifiers:
 
 
 if __name__ == '__main__':
-    Classifiers().make_prediction()
+    # Classifiers().make_prediction()
     # for i in range(10):
     #     print()
 #              precision    recall  f1-score   support
@@ -116,3 +116,14 @@ if __name__ == '__main__':
 #           1       0.65      0.46      0.54        96
 #
 # avg / total       0.79      0.79      0.79       786
+    a = []
+    b = []
+    for i in range(0, 4):
+        a.append(i)
+    for i in range(5,8):
+        b.append(i)
+    print(a)
+    print(b)
+    for t in zip(a, b):
+        print(t)
+    print(a[5:])
